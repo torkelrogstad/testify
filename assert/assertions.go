@@ -67,6 +67,32 @@ func ObjectsAreEqual(expected, actual interface{}) bool {
 		}
 	}
 
+	var (
+		expectedDate time.Time
+		actualDate   time.Time
+	)
+	switch expected := expected.(type) {
+	case time.Time:
+		expectedDate = expected
+	case *time.Time:
+		if expected != nil {
+			expectedDate = *expected
+		}
+	}
+
+	switch actual := actual.(type) {
+	case time.Time:
+		actualDate = actual
+	case *time.Time:
+		if actual != nil {
+			actualDate = *actual
+		}
+	}
+
+	if !expectedDate.Equal(time.Time{}) && !actualDate.Equal(time.Time{}) {
+		return expectedDate.Equal(actualDate)
+	}
+
 	exp, ok := expected.([]byte)
 	if !ok {
 		return reflect.DeepEqual(expected, actual)
